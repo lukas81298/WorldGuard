@@ -45,6 +45,8 @@ import javax.annotation.Nullable;
 
 public class RegionFlagsListener extends AbstractListener {
 
+    private static boolean checkFlyIntoWater = true;
+
     /**
      * Construct the listener.
      *
@@ -107,7 +109,7 @@ public class RegionFlagsListener extends AbstractListener {
             if (!query.testState(entity.getLocation(), (Player) entity, DefaultFlag.FALL_DAMAGE)) {
                 event.setCancelled(true);
             }
-        } else {
+        } else if(checkFlyIntoWater){
             try {
                 if (entity instanceof Player && event.getCause() == DamageCause.FLY_INTO_WALL) {
                     if (!query.testState(entity.getLocation(), (Player) entity, DefaultFlag.FALL_DAMAGE)) {
@@ -115,6 +117,7 @@ public class RegionFlagsListener extends AbstractListener {
                     }
                 }
             } catch (NoSuchFieldError ignored) {
+                checkFlyIntoWater = false;
             }
         }
     }

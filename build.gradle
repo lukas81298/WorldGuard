@@ -26,7 +26,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
         classpath 'org.ajoberstar:gradle-git:0.12.0'
     }
@@ -48,7 +48,6 @@ if (!project.hasProperty("gitCommitHash")) {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
-    apply plugin: 'checkstyle'
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'com.jfrog.artifactory-upload'
 
@@ -59,14 +58,13 @@ subprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    checkstyle.configFile = new File(rootProject.projectDir, "config/checkstyle/checkstyle.xml")
 
     repositories {
-        mavenCentral()
+        maven { url "https://repo1.maven.org/maven2/" }
         maven { url "http://repo.spongepowered.org/maven/" }
         maven { url "https://hub.spigotmc.org/nexus/content/groups/public" }
         maven { url "http://maven.sk89q.com/repo/" }
-        maven { url "http://repo.maven.apache.org/maven2" }
+        maven { url "https://repo.maven.apache.org/maven2" }
     }
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -91,9 +89,6 @@ subprojects {
         archives sourcesJar
         archives javadocJar
     }
-
-    build.dependsOn(checkstyleMain)
-    build.dependsOn(checkstyleTest)
     build.dependsOn(sourcesJar)
     build.dependsOn(javadocJar)
 
@@ -107,25 +102,5 @@ subprojects {
         exclude 'LICENSE*'
     }
 
-    artifactory {
-        contextUrl = "${artifactory_contextUrl}"
-        publish {
-            repository {
-                repoKey = project.version.contains("SNAPSHOT") ? 'libs-snapshot-local' : 'libs-release-local'
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-                maven = true
-                
-            }
-        }
 
-        resolve {
-            repository {
-                repoKey = 'repo'
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-                maven = true
-            }
-        }
-    }
 }

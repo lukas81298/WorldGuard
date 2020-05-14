@@ -1,13 +1,11 @@
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-project.version = '6.2.1-SNAPSHOT'
-ext.internalVersion = project.version + ";" + gitCommitHash
+project.version = '6.2.1-GOMMEHD-SNAPSHOT'
+ext.internalVersion = project.version
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-
-checkstyle.configFile = new File(projectDir, "config/checkstyle/checkstyle.xml")
 
 dependencies {
     compile 'org.khelekore:prtree:1.5.0'

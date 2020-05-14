@@ -75,6 +75,7 @@ public class WorldGuardPlayerListener implements Listener {
 
     private static final Logger log = Logger.getLogger(WorldGuardPlayerListener.class.getCanonicalName());
     private static final Pattern opPattern = Pattern.compile("^/(?:bukkit:)?op(?:\\s.*)?$", Pattern.CASE_INSENSITIVE);
+    private static boolean chorusFruitPresent = true;
     private WorldGuardPlugin plugin;
 
     /**
@@ -378,6 +379,9 @@ public class WorldGuardPlayerListener implements Listener {
                     return;
                 }
             }
+            if(!chorusFruitPresent) {
+                return;
+            }
             try {
                 if (event.getCause() == TeleportCause.CHORUS_FRUIT) {
                     if (!plugin.getGlobalRegionManager().hasBypass(localPlayer, world)) {
@@ -391,7 +395,9 @@ public class WorldGuardPlayerListener implements Listener {
                         }
                     }
                 }
-            } catch (NoSuchFieldError ignored) {}
+            } catch (NoSuchFieldError ignored) {
+                chorusFruitPresent = false;
+            }
         }
     }
 

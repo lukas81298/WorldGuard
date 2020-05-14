@@ -91,6 +91,7 @@ public class EventAbstractionListener extends AbstractListener {
     private final InventoryMoveItemEventDebounce moveItemDebounce = new InventoryMoveItemEventDebounce(30000);
     private final EventDebounce<BlockPistonRetractKey> pistonRetractDebounce = EventDebounce.create(5000);
     private final EventDebounce<BlockPistonExtendKey> pistonExtendDebounce = EventDebounce.create(5000);
+    private static boolean getBlocksCheck = true;
 
     /**
      * Construct the listener.
@@ -277,9 +278,17 @@ public class EventAbstractionListener extends AbstractListener {
                 BlockFace direction = event.getDirection();
 
                 ArrayList<Block> blocks;
-                try {
-                    blocks = new ArrayList<Block>(event.getBlocks());
-                } catch (NoSuchMethodError e) {
+                if(getBlocksCheck) {
+                    try {
+                        blocks = new ArrayList<Block>(event.getBlocks());
+                    } catch (NoSuchMethodError e) {
+                        getBlocksCheck = false;
+                        blocks = Lists.newArrayList(event.getRetractLocation().getBlock());
+                        if (piston.getType() == Material.PISTON_MOVING_PIECE) {
+                            direction = new PistonExtensionMaterial(Material.PISTON_STICKY_BASE.getId(), piston.getData()).getFacing();
+                        }
+                    }
+                } else {
                     blocks = Lists.newArrayList(event.getRetractLocation().getBlock());
                     if (piston.getType() == Material.PISTON_MOVING_PIECE) {
                         direction = new PistonExtensionMaterial(Material.PISTON_STICKY_BASE.getId(), piston.getData()).getFacing();

@@ -42,6 +42,7 @@ import org.bukkit.potion.PotionEffectType;
  * Handles blocked potions.
  */
 public class BlockedPotionsListener extends AbstractListener {
+    private static boolean oldSplash = false;
 
     /**
      * Construct the listener.
@@ -101,19 +102,8 @@ public class BlockedPotionsListener extends AbstractListener {
 
         // We only care about potions
         boolean oldPotions = false;
-        try {
-            if (item.getType() != Material.POTION
-                    && item.getType() != Material.SPLASH_POTION
-                    && item.getType() != Material.LINGERING_POTION) {
-                return;
-            }
-        } catch (NoSuchFieldError ignored) {
-            // PotionMeta technically has been around since 1.7, so the code below
-            // *should* work still. we just have different materials now.
-            if (item.getType() != Material.POTION) {
-                return;
-            }
-            oldPotions = true;
+        if (item.getType() != Material.POTION) {
+            return;
         }
 
 
@@ -148,10 +138,7 @@ public class BlockedPotionsListener extends AbstractListener {
                 if (player != null) {
                     if (getPlugin().hasPermission(player, "worldguard.override.potions")) {
                         boolean isSplash = false;
-                        try {
-                            isSplash = (!oldPotions && (item.getType() == Material.SPLASH_POTION || item.getType() == Material.LINGERING_POTION));
-                        } catch (NoSuchFieldError ignored) {
-                        }
+
                         isSplash |= (oldPotions && (Potion.fromItemStack(item).isSplash()));
                         if (isSplash && wcfg.blockPotionsAlways) {
                             player.sendMessage(ChatColor.RED + "Sorry, potions with " +

@@ -75,6 +75,8 @@ public class RegionProtectionListener extends AbstractListener {
     private static final String DISEMBARK_MESSAGE_KEY = "worldguard.region.disembarkMessage";
     private static final int LAST_MESSAGE_DELAY = 500;
 
+    private static boolean checkForFrostedIce = true;
+
     /**
      * Construct the listener.
      *
@@ -202,9 +204,12 @@ public class RegionProtectionListener extends AbstractListener {
                 /* Everything else */
                 } else {
                     canPlace = query.testBuild(target, associable, combine(event, DefaultFlag.BLOCK_PLACE));
-                    try {
-                        event.setSilent(type == Material.FROSTED_ICE);
-                    } catch (NoSuchFieldError ignored) {} // back compat
+                    if(checkForFrostedIce) {
+                        try {
+                            event.setSilent(type == Material.FROSTED_ICE);
+                        } catch (NoSuchFieldError ignored) {} // back compat
+                        checkForFrostedIce = false;
+                    }
                     what = "place that block";
                 }
 
